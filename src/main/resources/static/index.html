@@ -1,0 +1,118 @@
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="webjars/font-awesome/5.4.1/css/all.min.css">
+
+    <script src="webjars/jquery/3.3.1-1/jquery.min.js"></script>
+    <script src="webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <script src="/webjars/vue/2.5.16/vue.min.js"></script>
+    <!-- order matters. Put all this after vue.js and jquery-->
+    <script src="js/todos.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script> -->
+</head>
+<body>
+
+
+<div id="app" class="container">
+    <my-title title="Todo List"> </my-title>
+
+    <div class="alert alert-primary" role="alert">
+        <strong>{{completedCounter}}</strong> completed tasks on a total of <strong>{{todos.length}}</strong> !
+    </div>
+
+    <add-todo-form @added-todo="onAddedTodo"></add-todo-form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Complete</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(todo, index) in todos"
+                :class="{'table-success': todo.id===added}">
+
+                <th scope="row">{{todo.id}}</th>
+                <td >
+                    <input v-if="editable===todo.id" v-model="todo.title" :key="todo.id" @keyup.enter ="stopEdit" type="text" class="form-control">
+                    <span v-else>{{todo.title}}</span>
+                </td>
+                <td>
+                    <div class="custom-control custom-checkbox">
+                        <input @click="toggle(todo.id)" type="checkbox" :checked="todo.completed" class="custom-control-input" :id="todo.id">
+                        <label class="custom-control-label text-hide" :for="todo.id">workaround</label>
+                    </div>
+                </td>
+                <td>
+                    <a @click="startEdit(todo.id)" href="#" class="far fa-edit"></a>
+                    <a @click="remove(todo.id)" href="#" class="far fa-trash-alt"></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+
+<script >
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            todos: [],
+            editable : -1,
+            added : -1,
+            isLast : true
+        },
+        mounted : function () {
+            this.refresh();
+        },
+        methods: {
+            refresh : function(){
+                var onSuccess = function (data) {
+                    this.todos = data;
+                }.bind(this);
+                API.get(onSuccess);
+            },
+
+            onAddedTodo: function (id) {
+                this.added = id;
+                this.refresh();
+            },
+
+            remove: function (id) {
+                API.delete(id);
+                this.refresh();
+            },
+
+            toggle: function (id) {
+                toggleStatus(id, this.todos);
+            },
+            startEdit : function (id) {
+                this.editable = id;
+            },
+            stopEdit : function () {
+                this.editable = -1;
+            }
+
+        },
+        computed : {
+            completedCounter : function () {
+               return countCompleted(this.todos);
+            }
+        }
+    })
+
+
+</script>
+</html>
