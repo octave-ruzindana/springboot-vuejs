@@ -1,19 +1,30 @@
 package be.octave.bootvuejs;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+@Entity
 public class Todo {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Size(min = 8, message = "Should be at least 8 characters")
     private String title;
+
     private boolean completed;
 
-    public Todo(int id, String title, boolean completed) {
-        this.id = id;
+    public Todo(String title, boolean completed) {
         this.title = title;
         this.completed = completed;
     }
 
-    public Todo() {
-    }
+    protected Todo() {}
 
 
     public int getId() {

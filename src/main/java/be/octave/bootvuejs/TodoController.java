@@ -2,12 +2,10 @@ package be.octave.bootvuejs;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 
 @RestController
 @RequestMapping("/api")
@@ -16,34 +14,39 @@ public class TodoController {
 
     Logger logger = LoggerFactory.getLogger(TodoController.class);
 
-    private static List<Todo> todos = new LinkedList<>(Arrays.asList(
-            new Todo(1,"delectus aut autem", false),
-            new Todo(2, "quis ut nam facilis et officia qui", true),
-            new Todo(3, "fugiat veniam minus", true),
-            new Todo(4, "et porro tempora", false),
-            new Todo(5, "laboriosam mollitia et enim quasi adipisci quia provident illum", false)
-            )
-    );
+    final TodoRepository todoRepository;
+
+    @PostConstruct
+    protected void init(){
+
+        todoRepository.save(new Todo("delectus aut autem", false));
+        todoRepository.save(new Todo("quis ut nam facilis et officia qui", true));
+        todoRepository.save(new Todo("fugiat veniam minus", true));
+        todoRepository.save(new Todo("et porro tempora", false));
+        todoRepository.save(new Todo("laboriosam mollitia et enim quasi adipisci quia provident illum", false));
+
+}
+
+    @Autowired
+    public TodoController(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
 
     @GetMapping("/todos")
-    public List<Todo> findTodos() {
-        return todos;
+    public Iterable<Todo> findTodos() {
+        return todoRepository.findAll();
     }
 
     @PostMapping("/todos")
     public int createTodo(@RequestBody Todo todo){
-        logger.info("Creating todo :" + todo);
-        int id = todos.size() + 1;
-        todo.setId(id);
-        todos.add(todo);
-        return id;
+        logger.info("Creating todo : {}",  todo);
+        return todoRepository.save(todo).getId();
     }
 
     @DeleteMapping("/todos/{id}")
     public boolean deleteTodo(@PathVariable("id") int id) {
-       todos = todos.stream()
-                .filter(todo -> todo.getId() != id)
-                .collect(Collectors.toList());
+        logger.info("Deleting todo with id {}", id);
+        todoRepository.deleteById(id);
         return true;
     }
 }
