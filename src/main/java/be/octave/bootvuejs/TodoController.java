@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
@@ -38,7 +39,7 @@ public class TodoController {
     }
 
     @PostMapping("/todos")
-    public int createTodo(@RequestBody Todo todo){
+    public int createTodo(@RequestBody @Valid Todo todo){
         logger.info("Creating todo : {}",  todo);
         return todoRepository.save(todo).getId();
     }

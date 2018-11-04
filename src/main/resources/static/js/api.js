@@ -1,17 +1,14 @@
 API = function(){
-    var current = null;
 
     function getTodos(onSuccess) {
         $.get("http://localhost:8080/api/todos", onSuccess);
     }
 
-    function deleteTodo(id){
+    function deleteTodo(id, onSuccess){
         $.ajax({
             url: 'http://localhost:8080/api/todos/' + id,
             type: 'DELETE',
-            success: function(result) {
-                console.log("Successfully deleted todo with id " + id);
-            }
+            success: onSuccess
         });
     }
 

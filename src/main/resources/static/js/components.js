@@ -1,5 +1,10 @@
 Vue.component('my-title',{
-    props : ['title'],
+    props : {
+        title : {
+            type:String,
+            required:true
+        }
+    },
     template : '<h1>{{title}}</h1>'
 });
 
@@ -12,12 +17,11 @@ Vue.component('add-todo-form',{
     methods :{
         add:function () {
             var todo = {id: 0, title: this.description, completed: false};
-            console.log("Adding ..." + JSON.stringify(todo))
             API.post(todo, (function (result) {
                 this.$emit("added-todo", result);
-                console.log("Added todo with id " + JSON.stringify(result));
+                this.description = "";//clear
             }).bind(this));
-        }
+        },
     },
     computed : {
         classObject: function(){

@@ -10,7 +10,7 @@
     <script src="webjars/jquery/3.3.1-1/jquery.min.js"></script>
     <script src="webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
-    <script src="/webjars/vue/2.5.16/vue.min.js"></script>
+    <script src="/webjars/vue/2.5.16/vue.js"></script>
     <!-- order matters. Put all this after vue.js and jquery-->
     <script src="js/todos.js"></script>
     <script src="js/api.js"></script>
@@ -83,7 +83,9 @@
             refresh : function(){
                 var onSuccess = function (data) {
                     this.todos = data;
+                    console.log("Refresh Called");
                 }.bind(this);
+                console.log("Calling refresh....");
                 API.get(onSuccess);
             },
 
@@ -93,12 +95,13 @@
             },
 
             remove: function (id) {
-                API.delete(id);
-                this.refresh();
+                API.delete(id, function (result) {
+                    TODO.removeById(id, this.todos);
+                }.bind(this));
             },
 
             toggle: function (id) {
-                toggleStatus(id, this.todos);
+                TODO.toggleStatus(id, this.todos);
             },
             startEdit : function (id) {
                 this.editable = id;
@@ -110,7 +113,7 @@
         },
         computed : {
             completedCounter : function () {
-               return countCompleted(this.todos);
+               return TODO.countCompleted(this.todos);
             }
         }
     })
