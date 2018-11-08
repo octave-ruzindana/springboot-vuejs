@@ -1,0 +1,76 @@
+<html>
+<head>
+<!--
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="webjars/font-awesome/5.4.1/css/all.min.css">
+-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<h1>Hello</h1>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Inss</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>7809765455</td>
+        <td>NEW</td>
+        <td>
+            <div class="button">
+                <img src="assets/padlock.png" width="32" height="32">
+                <div class="button__badge">1</div>
+            </div>
+
+            <div class="button">
+                <a href="#"><img src="assets/paper-clip.png" width="32" height="32"></a>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>6799965455</td>
+        <td>NEW</td>
+        <td>
+            <div class="button">
+                <a href="#"><img src="assets/padlock.png" width="32" height="32"></a>
+                <div class="button__badge">3</div>
+            </div>
+            <div class="button">
+                <a href="#"><img src="assets/paper-clip.png" width="32" height="32"></a>
+                <div class="button__badge" style="background-color: green">3</div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!-- source : https://stackoverflow.com/questions/5747863/easiest-css-for-facebook-style-red-notifications-->
+<style type="text/css">
+
+    /* Define what each icon button should look like */
+    .button {
+        display: inline-block; /* Inline elements with width and height. TL;DR they make the icon buttons stack from left-to-right instead of top-to-bottom */
+        position: relative; /* All 'absolute'ly positioned elements are relative to this one */
+        padding: 2px 5px; /* Add some padding so it looks nice */
+    }
+
+    /* Make the badge float in the top right corner of the button */
+    .button__badge {
+        background-color: #fa3e3e;
+        border-radius: 2px;
+        color: white;
+
+        padding: 1px 3px;
+        font-size: 12px;
+        position: absolute; /* Position the badge within the relatively positioned button */
+        top: 0;
+        right: 0;
+    }
+
+</style>
+</body>
+</html>
