@@ -5,11 +5,6 @@ TODO = function () {
         });
     }
 
-    var toggleStatus = function (id, todos) {
-        var found = findById(id, todos);
-        found.completed = !found.completed;
-    }
-
     var countCompleted = function (todos) {
         var accumulator = function (counter, todo) {
             return counter + (todo.completed === true);
@@ -31,7 +26,6 @@ TODO = function () {
 
     return {
         findById: findById,
-        toggleStatus: toggleStatus,
         countCompleted: countCompleted,
         removeById: removeById
     }

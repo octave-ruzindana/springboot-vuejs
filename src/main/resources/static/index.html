@@ -27,6 +27,10 @@
         <strong>{{completedCounter}}</strong> completed tasks on a total of <strong>{{todos.length}}</strong> !
     </div>
 
+    <div v-show="message!==null" class="alert alert-success" role="alert">
+        {{message}}
+    </div>
+
     <add-todo-form @added-todo="onAddedTodo"></add-todo-form>
 
     <table class="table">
@@ -44,12 +48,15 @@
 
                 <th scope="row">{{todo.id}}</th>
                 <td >
-                    <input v-if="editable===todo.id" v-model="todo.title" :key="todo.id" @keyup.enter ="stopEdit" type="text" class="form-control">
+                    <input v-if="editable===todo.id" v-model="todo.title" :key="todo.id"
+                           @keyup.enter ="update(todo)"
+                           @keyup.esc="stopEdit"
+                           type="text" class="form-control">
                     <span v-else>{{todo.title}}</span>
                 </td>
                 <td>
                     <div class="custom-control custom-checkbox">
-                        <input @click="toggle(todo.id)" type="checkbox" :checked="todo.completed" class="custom-control-input" :id="todo.id">
+                        <input v-model="todo.completed" @click="update(todo)" type="checkbox" class="custom-control-input" :id="todo.id">
                         <label class="custom-control-label text-hide" :for="todo.id">workaround</label>
                     </div>
                 </td>
@@ -74,7 +81,9 @@
             todos: [],
             editable : -1,
             added : -1,
-            isLast : true
+            isLast : true,
+            message :null
+
         },
         mounted : function () {
             this.refresh();
@@ -83,9 +92,7 @@
             refresh : function(){
                 var onSuccess = function (data) {
                     this.todos = data;
-                    console.log("Refresh Called");
                 }.bind(this);
-                console.log("Calling refresh....");
                 API.get(onSuccess);
             },
 
@@ -100,8 +107,11 @@
                 }.bind(this));
             },
 
-            toggle: function (id) {
-                TODO.toggleStatus(id, this.todos);
+            update: function (todo) {
+                API.post(todo, function (result) {
+                    this.message = "Todo "+ todo.id +" has been successfully updated";
+                    this.stopEdit();
+                }.bind(this));
             },
             startEdit : function (id) {
                 this.editable = id;
