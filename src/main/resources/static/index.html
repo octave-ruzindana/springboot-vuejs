@@ -27,10 +27,6 @@
         <strong>{{completedCounter}}</strong> completed tasks on a total of <strong>{{todos.length}}</strong> !
     </div>
 
-    <div v-show="message!==null" class="alert alert-success" role="alert">
-        {{message}}
-    </div>
-
     <add-todo-form @added-todo="onAddedTodo"></add-todo-form>
 
     <table class="table">
@@ -48,11 +44,15 @@
 
                 <th scope="row">{{todo.id}}</th>
                 <td >
-                    <input v-if="editable===todo.id" v-model="todo.title" :key="todo.id"
+                    <input v-if="todo.id===editable"
+                           v-model="todo.title"
+                           :key="todo.id"
                            @keyup.enter ="update(todo)"
-                           @keyup.esc="stopEdit"
+                           @keyup.esc="cancelEdit(todo)"
                            type="text" class="form-control">
-                    <span v-else>{{todo.title}}</span>
+                    <span v-else
+                          @dblclick="startEdit(todo)"
+                          :class="{done : todo.completed}">{{todo.title}}</span>
                 </td>
                 <td>
                     <div class="custom-control custom-checkbox">
@@ -61,7 +61,7 @@
                     </div>
                 </td>
                 <td>
-                    <a @click="startEdit(todo.id)" href="#" class="far fa-edit"></a>
+                    <a @click="startEdit(todo)" href="#" class="far fa-edit"></a>
                     <a @click="remove(todo.id)" href="#" class="far fa-trash-alt"></a>
                 </td>
             </tr>
@@ -81,9 +81,7 @@
             todos: [],
             editable : -1,
             added : -1,
-            isLast : true,
-            message :null
-
+            cached: ""
         },
         mounted : function () {
             this.refresh();
@@ -109,15 +107,20 @@
 
             update: function (todo) {
                 API.post(todo, function (result) {
-                    this.message = "Todo "+ todo.id +" has been successfully updated";
                     this.stopEdit();
                 }.bind(this));
             },
-            startEdit : function (id) {
-                this.editable = id;
+            startEdit : function (todo) {
+                this.cached = todo.title;
+                this.editable = todo.id;
             },
             stopEdit : function () {
                 this.editable = -1;
+            },
+            cancelEdit(todo){
+                todo.title = this.cached;
+                this.cached = "";
+                this.stopEdit()
             }
 
         },
@@ -130,4 +133,11 @@
 
 
 </script>
+
+<style>
+    .done {
+        text-decoration: line-through;
+        color: gray;
+    }
+</style>
 </html>
