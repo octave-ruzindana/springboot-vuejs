@@ -44,7 +44,7 @@ Vue.component('add-todo-form',{
                         <div class="invalid-feedback">Must be at least 8 characters</div>\
                     </div>\
                     <div class="col">\
-                        <button @click.stop.prevent="add" type="submit" :disabled="!isFormValid" class="btn btn-primary mb-2"><i class="fa fa-plus"></i> Add</button>\
+                        <button @click.stop.prevent="add" type="submit" :disabled="!isFormValid" class="btn btn-primary mb-2" id="add_todo_button"><i class="fa fa-plus"></i> Add</button>\
                     </div>\
                  </div>\
              </form>'
